@@ -15,7 +15,7 @@ impl fmt::Display for Bal3 {
         }
     }
 }
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum TryFromIntError {
     PosOverflow,
     NegOverflow,
@@ -41,7 +41,7 @@ impl fmt::Display for T5 {
             let (i, x) = item;
             strings[i] = x.to_string();
         }
-        write!(f, "{}", strings.concat())
+        write!(f, "{}", strings.concat().trim_start_matches('0'))
     }
 }
 
@@ -72,20 +72,15 @@ impl T5 {
         } else {
             let mut value = [Bal3::Zero; 5];
             let mut remainder = int;
-            while remainder.unsigned_abs() > 1 {
+            while remainder.unsigned_abs() > 0 {
                 let (pow, pos) = find_first_non_zero(remainder as isize);
                 if pos {
-                        value[4 - pow as usize] = Bal3::One
+                    remainder -= 3_u8.pow(pow as u32) as i8;
+                    value[4 - pow as usize] = Bal3::One
                 } else {
+                    remainder += 3_u8.pow(pow as u32) as i8;
                     value[4 - pow as usize] = Bal3::NegativeOne
                 }
-                remainder = (3_u8.pow(pow as u32) as i8) - remainder;
-            }
-            match remainder {
-                1 => value[4] = Bal3::One,
-                0 => value[4] = Bal3::Zero,
-                -1 => value[4] = Bal3::NegativeOne,
-                _ => panic!("This should never be called because the while loop ensures remainder.abs() <= 1 by this point"),
             }
             Ok(T5 {value})
         }
@@ -94,23 +89,16 @@ impl T5 {
 
 // Not yet implemented correctly
 fn find_first_non_zero(int: isize) -> (u8, bool) {
-    if int == 0 { return (0, true)}
-    let mut min_dist = 2 * T5::MAX as usize;
-    let mut pos: bool = true;
+    let pos = int >= 0;
+    let modulus: usize = int.unsigned_abs();
+    let mut max_num: usize = 0;
     let mut index: u8 = 0;
-    for i in 0..40 {
-        let pow = 3_isize.pow(i).unsigned_abs() as isize;
-        if ((int - pow) as usize) < min_dist {
-            min_dist = (int - 3_isize.pow(i)).unsigned_abs();
-            pos = true;
-            index = i as u8;
+    for pow in 0..40_u8 {
+        max_num += 3_usize.pow(pow as u32);
+        if max_num >= modulus {
+            index = pow;
+            break;
         }
-        if ((int + pow) as usize) < min_dist {
-            min_dist = (int + 3_isize.pow(i)).unsigned_abs();
-            pos = false;
-            index = i as u8;
-        }
-
     }
     (index, pos)
 }
@@ -128,7 +116,7 @@ impl fmt::Display for T10 {
             let (i, x) = item;
             strings[i] = x.to_string();
         }
-        write!(f, "{}", strings.concat())
+        write!(f, "{}", strings.concat().trim_start_matches('0'))
     }
 }
 
@@ -145,7 +133,7 @@ impl fmt::Display for T20 {
             let (i, x) = item;
             strings[i] = x.to_string();
         }
-        write!(f, "{}", strings.concat())
+        write!(f, "{}", strings.concat().trim_start_matches('0'))
     }
 }
 
@@ -163,35 +151,21 @@ impl fmt::Display for T40 {
             let (i, x) = item;
             strings[i] = x.to_string();
         }
-        write!(f, "{}", strings.concat())
+        write!(f, "{}", strings.concat().trim_start_matches('0'))
     }
 }
 
-pub fn add(left: Bal3, right: Bal3) -> Bal3 {
-    match left {
-        Bal3::One => match right {
-            Bal3::NegativeOne => Bal3::Zero,
-            _ => Bal3::One,
-        },
-        Bal3::Zero => match right {
-            Bal3::One => Bal3::One,
-            Bal3::Zero => Bal3::Zero,
-            Bal3::NegativeOne => Bal3::NegativeOne,
-        },
-        Bal3::NegativeOne => match right {
-            Bal3::One => Bal3::Zero,
-            _ => Bal3::NegativeOne,
-        }
-    }
+pub fn add(left: T5, right: T5) -> Result<T5, TryFromIntError> {
+    T5::from_i8(left.to_i8()+right.to_i8())
 }
 
 pub fn main() {
     println!("{:?}", Bal3::One);
     println!("{}", Bal3::One);
     println!("{}", Bal3::NegativeOne);
-    println!("One plus Zero is: {}", add(Bal3::One, Bal3::Zero));
-    println!("{:?}", find_first_non_zero(6));
-    //println!("{:?}", T5::from_i8(6).unwrap())
+    println!("1T011 plus TT011 is: {}", add(T5 {value: [Bal3::One, Bal3::NegativeOne, Bal3::Zero, Bal3::One, Bal3::One]}, T5 {value: [Bal3::NegativeOne, Bal3::NegativeOne, Bal3::Zero, Bal3::One, Bal3::One]}).unwrap());
+    println!("{}", T5::from_i8(6).unwrap());
+    println!("{}", T5::from_i8(6).unwrap().to_i8());
 }
 
 #[cfg(test)]
@@ -204,7 +178,7 @@ mod tests {
     }
 
     #[test]
-    fn display_test() {
+    fn display_bal3_test() {
         let debug_one = format!("{:?}", Bal3::One);
         let debug_zero = format!("{:?}", Bal3::Zero);
         let debug_negone = format!("{:?}", Bal3::NegativeOne);
@@ -218,4 +192,33 @@ mod tests {
         assert_eq!(display_zero, "0");
         assert_eq!(display_negone, "T");
     }
+
+    #[test]
+    fn display_t5_test() {
+        let six = T5 {value: [Bal3::Zero, Bal3::Zero, Bal3::One, Bal3::NegativeOne, Bal3::Zero]};
+        assert_eq!(format!("{:?}", six), "T5 { value: [Zero, Zero, One, NegativeOne, Zero] }");
+        assert_eq!(format!("{}", six), "1T0");
+        let neg_forty_eight = T5 {value: [Bal3::NegativeOne, Bal3::One, Bal3::One, Bal3::NegativeOne, Bal3::Zero]};
+        assert_eq!(format!("{:?}", neg_forty_eight), "T5 { value: [NegativeOne, One, One, NegativeOne, Zero] }");
+        assert_eq!(format!("{}", neg_forty_eight), "T11T0");
+    }
+
+    #[test]
+    fn display_try_from_int_error_test() {
+        let pos = TryFromIntError::PosOverflow;
+        let neg = TryFromIntError::NegOverflow;
+        assert_eq!(format!("{:?}", pos), "PosOverflow");
+        assert_eq!(format!("{:?}", neg), "NegOverflow");
+    }
+
+    #[test]
+    fn from_i8_test() {
+        assert_eq!(T5::from_i8(6), Ok(T5 {value: [Bal3::Zero, Bal3::Zero, Bal3::One, Bal3::NegativeOne, Bal3::Zero]}));
+        assert_eq!(T5::from_i8(-48), Ok(T5 {value: [Bal3::NegativeOne, Bal3::One, Bal3::One, Bal3::NegativeOne, Bal3::Zero]}));
+        assert_eq!(T5::from_i8(0), Ok(T5 {value: [Bal3::Zero, Bal3::Zero, Bal3::Zero, Bal3::Zero, Bal3::Zero]}));
+        assert_eq!(T5::from_i8(122), Err(TryFromIntError::PosOverflow));
+        assert_eq!(T5::from_i8(-122), Err(TryFromIntError::NegOverflow));
+    }
+
+
 }
