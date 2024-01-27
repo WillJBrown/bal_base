@@ -122,8 +122,7 @@ mod tests {
 
         // T01 * 1T -> -8 * 2 = -16 -> -27 + 9 + 3 -1 -> T11T
         let result = "T01".parse::<T5>().unwrap() * "1T".parse::<T5>().unwrap();
-        let stringform = String::from(result);
-        println!("Result is {}", stringform)
+        println!("Result is {}", result);
     }
 
     #[test]
