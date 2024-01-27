@@ -59,58 +59,6 @@ mod t10;
 mod t20;
 mod t40;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct T10{
-    // contained in an i16
-    value: [Bal3; 10]
-}
-
-impl fmt::Display for T10 {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut strings: [String; 10] = Default::default();
-        for item in self.value.iter().enumerate() {
-            let (i, x) = item;
-            strings[i] = x.to_string();
-        }
-        write!(f, "{}", strings.concat().trim_start_matches('0'))
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct T20{
-    // contained in an i32
-    value: [Bal3; 20],
-}
-
-impl fmt::Display for T20 {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let mut strings: [String; 20] = Default::default();
-        for item in self.value.iter().enumerate() {
-            let (i, x) = item;
-            strings[i] = x.to_string();
-        }
-        write!(f, "{}", strings.concat().trim_start_matches('0'))
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct T40{
-    // contained in an i64
-    value: [Bal3; 40],
-}
-
-impl fmt::Display for T40 {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        const EMPTY_STRING: String = String::new();
-        let mut strings: [String; 40] = [EMPTY_STRING; 40];
-        for item in self.value.iter().enumerate() {
-            let (i, x) = item;
-            strings[i] = x.to_string();
-        }
-        write!(f, "{}", strings.concat().trim_start_matches('0'))
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
