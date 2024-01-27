@@ -156,9 +156,11 @@ mod t40_tests {
         let six = T40::try_from(6).unwrap();
         assert_eq!(format!("{:?}", six), "T40 { value: [Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, One, NegativeOne, Zero] }");
         assert_eq!(format!("{}", six), "1T0");
+        assert_eq!(String::from(six), "1T0");
         let neg_forty_eight = T40::try_from(-48).unwrap();
         assert_eq!(format!("{:?}", neg_forty_eight), "T40 { value: [Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, Zero, NegativeOne, One, One, NegativeOne, Zero] }");
         assert_eq!(format!("{}", neg_forty_eight), "T11T0");
+        assert_eq!(String::from(neg_forty_eight), "T11T0");
     }    
 
     #[test]

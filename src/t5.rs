@@ -155,9 +155,11 @@ mod t5_tests {
         let six = T5::try_from(6).unwrap();
         assert_eq!(format!("{:?}", six), "T5 { value: [Zero, Zero, One, NegativeOne, Zero] }");
         assert_eq!(format!("{}", six), "1T0");
+        assert_eq!(String::from(six), "1T0");
         let neg_forty_eight = T5::try_from(-48).unwrap();
         assert_eq!(format!("{:?}", neg_forty_eight), "T5 { value: [NegativeOne, One, One, NegativeOne, Zero] }");
         assert_eq!(format!("{}", neg_forty_eight), "T11T0");
+        assert_eq!(String::from(neg_forty_eight), "T11T0");
     }    
 
     #[test]
