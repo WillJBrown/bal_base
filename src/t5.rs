@@ -9,6 +9,11 @@ pub struct T5 {
     value: [Bal3; 5]
 }
 
+impl T5 {
+    pub const MAX: i8 = 121;
+    pub const MIN: i8 = -121;
+}
+
 impl fmt::Display for T5 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut strings: [String; 5] = Default::default();
@@ -49,11 +54,6 @@ impl FromStr for T5 {
         }
     }
 
-}
-
-impl T5 {
-    pub const MAX: i8 = 121;
-    pub const MIN: i8 = -121;
 }
 
 impl TryFrom<i8> for T5 {

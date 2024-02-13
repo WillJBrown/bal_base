@@ -9,6 +9,11 @@ pub struct T20 {
     value: [Bal3; 20]
 }
 
+impl T20 {
+    pub const MAX: i32 = 1743392200;
+    pub const MIN: i32 = -1743392200;
+}
+
 impl fmt::Display for T20 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut strings: [String; 20] = Default::default();
@@ -49,11 +54,6 @@ impl FromStr for T20 {
         }
     }
 
-}
-
-impl T20 {
-    pub const MAX: i32 = 1743392200;
-    pub const MIN: i32 = -1743392200;
 }
 
 impl TryFrom<i32> for T20 {

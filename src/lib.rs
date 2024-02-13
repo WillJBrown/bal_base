@@ -1,5 +1,10 @@
 use std::fmt;
 
+mod t5;
+mod t10;
+mod t20;
+mod t40;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Bal3 {
     One,
@@ -53,11 +58,6 @@ fn find_first_non_zero(int: isize) -> (u8, bool) {
     }
     acc
 } */
-
-mod t5;
-mod t10;
-mod t20;
-mod t40;
 
 #[cfg(test)]
 mod tests {

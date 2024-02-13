@@ -9,6 +9,11 @@ pub struct T40 {
     value: [Bal3; 40]
 }
 
+impl T40 {
+    pub const MAX: i64 = 6078832729528464400;
+    pub const MIN: i64 = -6078832729528464400;
+}
+
 impl fmt::Display for T40 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut strings: Vec<String> = vec![String::from(""); 40];
@@ -49,11 +54,6 @@ impl FromStr for T40 {
         }
     }
 
-}
-
-impl T40 {
-    pub const MAX: i64 = 6078832729528464400;
-    pub const MIN: i64 = -6078832729528464400;
 }
 
 impl TryFrom<i64> for T40 {
